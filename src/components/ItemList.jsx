@@ -30,14 +30,10 @@ export const ItemList = (props) => {
 
   const onSelectEditTodo = id => {
     setEditedTodo({ ...editedTodo, id})
-    console.log(editedTodo)
     setEditFlag(false)
 }
 
-  const handleEditTodo = e => {
-    setEditedTodo({...editedTodo, body: e.target.value})
-    console.log(editedTodo)
-  }
+  const handleEditTodo = e => setEditedTodo(editedTodo => {...editedTodo, body: e.target.value})
 
   const saveTask = () => {
     if (editedTodo === "") return;
@@ -45,16 +41,14 @@ export const ItemList = (props) => {
       if(todo.id === editedTodo.id) todo.body = editedTodo.body
       return todo
     })
-    setTodoList(newTodoList);
+    setTodo(newTodoList);
     setEditFlag(true);
   };
 
   const upTodo = (id) => {
-    let index = todoList.indexOf(todo)
-    if (index === 0) return 
     const newTodoList = [...todoList]
-
-    newTodoList.splice(index - 1, 2, newTodoList[index], newTodoList[index - 1])
+    if(id < 1) return
+    newTodoList.splice(id - 1, 2, newTodoList[id], newTodoList[id - 1]);
     setTodoList(newTodoList)
   };
 
