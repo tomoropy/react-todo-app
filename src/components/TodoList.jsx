@@ -13,16 +13,13 @@ export const TodoList = () => {
 
   const completedCount = () => todoList.filter(todo => todo.isCompleted).length
 
-  const handleNewTodo = e => setTodo(todo => { ...todo, body: e.target.value })
+  const handleNewTodo = e => setTodo({ ...todo, body: e.target.value })
 
   const HandleSubmit = e => {
     e.preventDefault()
     if (todo.body === "") return
-    console.log(todo)
     setTodoList([...todoList, todo])
-    setTodo(todo => {id: todo.id + 1, body: "", isCompleted: false})
-    console.log(todo)
-    console.log(todoList)
+    setTodo({id: todo.id + 1, body: "", isCompleted: false})
   };
 
   return (
