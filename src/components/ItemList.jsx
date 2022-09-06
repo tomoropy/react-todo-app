@@ -48,9 +48,10 @@ export const ItemList = (props) => {
   }
 
   const upTodo = id => {
+    const index = todoList.indexOf(todo)
+    if (index === 0) return 
     const newTodoList = [...todoList]
-    if(id < 1) return
-    newTodoList.splice(id - 1, 2, newTodoList[id], newTodoList[id - 1])
+    newTodoList.splice(index - 1, 2, newTodoList[index], newTodoList[index - 1])
     setTodoList(newTodoList)
   }
 
