@@ -12,82 +12,73 @@ import { ArrowDropUp, Delete, Edit, Save } from "@mui/icons-material";
 import { useState } from "react";
 
 export const ItemList = (props) => {
-  const { task, id, todos, setTodos } = props;
+  const { todo, setTodo, todoList, setTodoList, editedTodo, setEditedTodo} = props;
   const [editFlag, setEditFlag] = useState(true);
-  const [editedTask, setEditedTask] = useState("");
 
-  const handleRemoveTask = (id) => {
-    const newTodos = [...todos];
-    newTodos.splice(id, 1);
-    setTodos(newTodos);
-  };
+  const handleRemoveTodo = id => {
+    const newTodoList = [...todoList]
+    setTodoList(newTodoList.filter(todo => !(todo.id === id)))
+  }
 
-  const handleUpdateTask = () => {
-    let newTodos = todos.map((todo, todoIndex) => {
-      if (todoIndex === id) {
-        todo.isCompleted = !todo.isCompleted;
-      }
-      return todo;
-    });
-    setTodos(newTodos);
-  };
+  const handleUpdateTask = (id) => {
+    const updateTodoList = todoList.map((todo) => {
+      if(todo.id === id) todo.isCompleted = !todo.isCompleted 
+      return todo
+    })
+    setTodoList(updateTodoList)
+  }
 
-  const changeEditFlag = () => {
-    setEditFlag(!editFlag);
-  };
+  const onSelectEditTodo = id => {
+    setEditedTodo({ ...editedTodo, id})
+    setEditFlag(false)
+}
 
-  const handleEditTask = (e) => {
-    setEditedTask(e.target.value);
-  };
+  const handleEditTodo = e => setEditedTodo(editedTodo => {...editedTodo, body: e.target.value})
 
   const saveTask = () => {
-    if (editedTask === "") return;
-    let newTodos = todos.map((todo, todoIndex) => {
-      if (todoIndex === id) {
-        todo.task = editedTask;
-      }
-      return todo;
-    });
-    setTodos(newTodos);
+    if (editedTodo === "") return;
+    const newTodoList = todoList.map(todo => {
+      if(todo.id === editedTodo.id) todo.body = editedTodo.body
+      return todo
+    })
+    setTodo(newTodoList);
     setEditFlag(true);
   };
 
-  const upperTask = () => {
-    const newTodos = [...todos];
-    const targetTask = newTodos[id];
-    newTodos[id] = newTodos[id - 1];
-    newTodos[id - 1] = targetTask;
-
-    setTodos(newTodos);
+  const upTodo = (id) => {
+    const newTodoList = [...todoList]
+    if(id < 1) return
+    newTodoList.splice(id - 1, 2, newTodoList[id], newTodoList[id - 1]);
+    setTodoList(newTodoList)
   };
 
   return (
     <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-      <ListItem disablePadding>
+      <ListItem disablePadding >
         <ListItemButton>
           <ListItemIcon>
             <Checkbox
-              onClick={() => handleUpdateTask(id)}
-              checked={todos[id].isCompleted}
+              onClick={() => handleUpdateTask(todo.id)}
+              checked={todo.isCompleted}
             />
           </ListItemIcon>
           {editFlag ? (
-            <ListItemText primary={task} />
+            <ListItemText primary={todo.body} />
           ) : (
-            <Input onChange={handleEditTask} autoFocus={true} />
+            <Input onChange={handleEditTodo} autoFocus />
           )}
         </ListItemButton>
 
         {editFlag ? (
           <>
-            <IconButton onClick={upperTask} disabled={id < 1}>
+            <IconButton onClick={() => upTodo(todo.id)} >
               <ArrowDropUp />
             </IconButton>
 
-            <IconButton onClick={() => changeEditFlag()}>
+            <IconButton onClick={() => onSelectEditTodo(todo.id)}>
               <Edit />
             </IconButton>
-            <IconButton onClick={() => handleRemoveTask(id)}>
+            <IconButton onClick={() => handleRemoveTodo(todo.id)}>
               <Delete />
             </IconButton>
           </>
